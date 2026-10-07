@@ -1,8 +1,10 @@
-# Lets Netlify rebuild the site itself when the project is connected from GitHub.
-# (Not needed when you drag the dist folder onto app.netlify.com/drop.)
+# One Netlify site for the public website and Gestion (/gestion/).
+# Files in public/ are served as they are; every other page comes from netlify/functions/app.mjs,
+# which reads the shared data in Netlify Blobs.
 [build]
-  command = "pip install -r requirements.txt && python build.py"
-  publish = "dist"
+  publish = "public"
+  command = "echo 'Nothing to build'"
 
-[build.environment]
-  PYTHON_VERSION = "3.11"
+[functions]
+  directory = "netlify/functions"
+  included_files = ["app/seed.json", "public/static/img/logo-full.png"]

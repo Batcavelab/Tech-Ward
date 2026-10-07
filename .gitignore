@@ -1,8 +1,5 @@
-__pycache__/
-*.pyc
-.venv/
-db.sqlite3
-media/
-staticfiles/
-dist/
-gmail_app_password.txt
+.data/
+node_modules/
+export-gestion.json
+*.sqlite3
+.netlify/
