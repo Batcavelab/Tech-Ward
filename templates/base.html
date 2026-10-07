@@ -44,7 +44,7 @@
         </a>
         <a class="btn btn-navy btn-sm hide-sm" href="{% url 'shop:contact' %}">{% t "nav_contact" %}</a>
         {# Owner-only: shown on the PC running gestion.bat, or in a browser that opened the site once with ?gestion=1 (?gestion=0 hides it). #}
-        <a class="btn btn-outline btn-sm" id="manage-link" href="http://127.0.0.1:8000/gestion/" hidden>{% if IS_RTL %}الإدارة{% else %}Gestion{% endif %}</a>
+        <a class="btn btn-outline btn-sm" id="manage-link" href="https://nasrauns.pythonanywhere.com/gestion/" hidden>{% if IS_RTL %}الإدارة{% else %}Gestion{% endif %}</a>
         <script>
           (function () {
             var link = document.getElementById("manage-link"), flag = new URLSearchParams(location.search).get("gestion");
