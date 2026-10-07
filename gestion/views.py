@@ -21,8 +21,9 @@ from shop.models import Category, Product
 from . import pdf
 from .forms import (ArticleForm, CustomerForm, ExpenseForm, OfferForm, OfferItemFormSet, PackItemFormSet,
                     ProductForm, PurchaseLineFormSet, PurchaseOrderForm, QuoteForm, QuoteLineFormSet,
-                    StockAdjustForm, SupplierForm)
-from .models import (ZERO, Article, Customer, Expense, Offer, PurchaseOrder, Quote, QuoteLine, StockMovement,
+                    SiteSettingsForm, StockAdjustForm, SupplierForm)
+from .models import (ZERO, Article, Customer, Expense, Offer, PurchaseOrder, Quote, QuoteLine, SiteSettings,
+                     StockMovement,
                      Supplier, article_for, unit_cost)
 from .services import (best_sellers, costs, done_quotes, ensure_articles, low_stock, month_start, monthly, pct,
                        receive_order, restore_offer, revenue, set_quote_status, stock_value, sync_offers, trend)
@@ -311,6 +312,29 @@ def customer_edit(request, pk=None):
             kpi("Total acheté", mad(sum((q.total_ttc for q in done), ZERO)), ""),
             kpi("En attente", mad(sum((q.total_ttc for q in quotes if q.status in (Quote.SENT, Quote.ACCEPTED)), ZERO)), ""),
         ] if customer.pk else [],
+    })
+
+
+# ====================================================================== website basics
+@login_required
+def site_settings(request):
+    from .site import DEFAULTS, apply_site_settings
+    site = SiteSettings.load()
+    form = SiteSettingsForm(request.POST or None, request.FILES or None, instance=site)
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        apply_site_settings()
+        messages.success(request, "Réglages enregistrés. Publiez le site pour les mettre en ligne.")
+        return redirect("gestion:site")
+    tw = settings.TECHWARD
+    return render(request, "gestion/site.html", {
+        "section": "site", "form": form, "site": site, "defaults": DEFAULTS,
+        "kpis": [
+            kpi("Téléphone", tw["phone_display"], f"WhatsApp {tw['whatsapp']}"),
+            kpi("Email", tw["email"], ""),
+            kpi("Bannière", "Personnalisée" if (site.hero_image or site.hero_title_fr or site.hero_text_fr) else "Par défaut",
+                f"Modifiée le {timezone.localtime(site.updated_at):%d/%m/%Y}" if site.updated_at else ""),
+        ],
     })
 
 
@@ -730,5 +754,24 @@ def publish(request):
     changed = Product.objects.filter(active=True)
     return render(request, "gestion/publish.html", {
         "section": "publish", "output": output, "ok": ok, "dist": settings.BUILD_DIR,
-        "count": changed.count(),
+        "count": changed.count(), "on_pc": sys.platform == "win32", "built": (settings.BUILD_DIR / "index.html").exists(),
     })
+
+
+@login_required
+def publish_zip(request):
+    """The generated site as one zip, for when the back office runs online (no dist folder to drag)."""
+    import io
+    import zipfile
+    root = settings.BUILD_DIR
+    if not (root / "index.html").exists():
+        messages.error(request, "Générez d'abord le site.")
+        return redirect("gestion:publish")
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zf:
+        for path in sorted(root.rglob("*")):
+            if path.is_file():
+                zf.write(path, path.relative_to(root).as_posix())
+    response = HttpResponse(buf.getvalue(), content_type="application/zip")
+    response["Content-Disposition"] = 'attachment; filename="tech-ward-site.zip"'
+    return response

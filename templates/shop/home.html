@@ -1,9 +1,9 @@
 ﻿{% extends "base.html" %}{% load static tw %}
 {% block content %}
-<section class="hero" style="--hero: url('{% if IS_RTL %}{% static 'img/photos/hero-rtl.jpg' %}{% else %}{% static 'img/photos/hero.jpg' %}{% endif %}')">
+<section class="hero" style="--hero: url('{% if HERO.image %}{{ HERO.image }}{% elif IS_RTL %}{% static 'img/photos/hero-rtl.jpg' %}{% else %}{% static 'img/photos/hero.jpg' %}{% endif %}')">
   <div class="container hero-inner">
-    <h1>{% t "hero_title_1" %}<br>{% t "hero_title_2" %}</h1>
-    <p>{% t "hero_text" %}</p>
+    <h1>{% if HERO.title %}{{ HERO.title|linebreaksbr }}{% else %}{% t "hero_title_1" %}<br>{% t "hero_title_2" %}{% endif %}</h1>
+    <p>{% if HERO.text %}{{ HERO.text }}{% else %}{% t "hero_text" %}{% endif %}</p>
     <div class="hero-ctas">
       <a class="btn btn-navy" href="{% url 'shop:list' 'cameras' %}">{% t "hero_cta" %} {% include "includes/icon.html" with name="arrow" %}</a>
       <a class="btn btn-light" href="{% url 'shop:packs' %}">{% t "hero_cta_2" %}</a>

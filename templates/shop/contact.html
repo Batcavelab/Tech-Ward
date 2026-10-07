@@ -20,7 +20,7 @@
     </a>
     <div class="contact-card">
       <span class="benefit-icon">{% include "includes/icon.html" with name="pin" %}</span>
-      <div><h4>{% t "zone" %}</h4><p>{% t "zone_value" %}</p></div>
+      <div>{% if TW.address %}<h4>{% if IS_RTL %}العنوان{% else %}Adresse{% endif %}</h4><p>{{ TW.address }}<br>{% t "zone_value" %}</p>{% else %}<h4>{% t "zone" %}</h4><p>{% t "zone_value" %}</p>{% endif %}</div>
     </div>
     <div class="contact-card">
       <span class="benefit-icon">{% include "includes/icon.html" with name="clock" %}</span>

@@ -88,6 +88,7 @@
         <h4>{% t "nav_contact" %}</h4>
         <a href="{{ wa_contact_url }}" target="_blank" rel="noopener" dir="ltr">WhatsApp · {{ TW.phone_display }}</a>
         <a href="mailto:{{ TW.email }}">{{ TW.email }}</a>
+        {% if TW.address %}<span>{{ TW.address }}</span>{% endif %}
         <span>{% t "hours_value" %}</span>
       </div>
     </div>

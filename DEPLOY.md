@@ -39,6 +39,7 @@ python manage.py collectstatic --noinput
 - **Source code:** `/home/nasrauns/tech-ward`
 - **Virtualenv:** `/home/nasrauns/.virtualenvs/techward`
 - **Static files:** URL `/static/` → directory `/home/nasrauns/tech-ward/staticfiles`
+- **Static files:** URL `/media/` → directory `/home/nasrauns/tech-ward/media` (uploaded photos, banner)
 - **WSGI configuration file:** replace its whole content with:
 
 ```python

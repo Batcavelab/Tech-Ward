@@ -5,7 +5,7 @@ from django.utils.text import slugify
 from shop.models import Product
 
 from .models import (Article, Customer, Expense, Offer, OfferItem, PackItem, PurchaseLine, PurchaseOrder,
-                     Quote, QuoteLine, StockMovement, Supplier)
+                     Quote, QuoteLine, SiteSettings, StockMovement, Supplier)
 
 DATE = forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d")
 
@@ -165,3 +165,56 @@ class StockAdjustForm(forms.Form):
             StockMovement.objects.create(product=product, kind=mode, quantity=qty,
                                          reason=self.cleaned_data["reason"] or dict(self.MODES)[mode])
         return qty
+
+
+class SiteSettingsForm(forms.ModelForm):
+    class Meta:
+        model = SiteSettings
+        exclude = ["updated_at"]
+        widgets = {
+            "hero_title_fr": forms.Textarea(attrs={"rows": 2}),
+            "hero_text_fr": forms.Textarea(attrs={"rows": 3}),
+            "hero_title_ar": forms.Textarea(attrs={"rows": 2, "dir": "rtl"}),
+            "hero_text_ar": forms.Textarea(attrs={"rows": 3, "dir": "rtl"}),
+            "hero_image": forms.FileInput(attrs={"accept": "image/*"}),
+        }
+
+    reset_hero = forms.BooleanField(label="Remettre la photo d'origine", required=False)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        from shop.i18n import t
+
+        from .site import DEFAULTS
+        placeholders = {key: DEFAULTS[key] for key in ("phone_display", "whatsapp", "email", "address")}
+        for lang in ("fr", "ar"):
+            placeholders[f"hero_title_{lang}"] = f"{t('hero_title_1', lang)}\n{t('hero_title_2', lang)}"
+            placeholders[f"hero_text_{lang}"] = t("hero_text", lang)
+        for name, text in placeholders.items():
+            if text:
+                self.fields[name].widget.attrs["placeholder"] = text
+
+    def clean_whatsapp(self):
+        number = "".join(c for c in self.cleaned_data["whatsapp"] if c.isdigit())
+        if number.startswith("00"):
+            number = number[2:]
+        if number.startswith("0") and len(number) == 10:  # 06xxxxxxxx -> 2126xxxxxxxx
+            number = "212" + number[1:]
+        if number and not 10 <= len(number) <= 15:
+            raise forms.ValidationError("Numéro invalide. Exemple : 212675474294.")
+        return number
+
+    def clean_hero_image(self):
+        image = self.cleaned_data.get("hero_image")
+        if image and getattr(image, "size", 0) > 5 * 1024 * 1024:
+            raise forms.ValidationError("Image trop lourde (5 Mo maximum).")
+        return image
+
+    def save(self, commit=True):
+        site = super().save(commit=False)
+        if self.cleaned_data.get("reset_hero") and "hero_image" not in self.changed_data:
+            site.hero_image.delete(save=False)
+            site.hero_image = ""
+        if commit:
+            site.save()
+        return site

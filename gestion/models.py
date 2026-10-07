@@ -329,3 +329,33 @@ class StockMovement(models.Model):
         if is_new:
             article_for(self.product)
             Article.objects.filter(product=self.product).update(stock=F("stock") + self.quantity)
+
+
+class SiteSettings(models.Model):
+    """Website basics edited in Gestion → Site web. A single row (pk=1); empty fields keep the defaults."""
+    phone_display = models.CharField("Téléphone affiché", max_length=40, blank=True,
+                                     help_text="Tel qu'il apparaît sur le site, ex. 06 75 47 42 94.")
+    whatsapp = models.CharField("Numéro WhatsApp", max_length=20, blank=True,
+                                help_text="Format international sans + ni espaces, ex. 212675474294. "
+                                          "Reçoit les commandes et les questions.")
+    email = models.EmailField("Email", blank=True)
+    address = models.CharField("Adresse", max_length=200, blank=True,
+                               help_text="Affichée sur la page Contact, en bas du site et sur les devis.")
+    hero_image = models.ImageField("Image de la bannière", upload_to="site/", blank=True,
+                                   help_text="Photo large, idéalement 1600 × 700 px. Vide = photo actuelle.")
+    hero_title_fr = models.TextField("Titre de la bannière (français)", blank=True,
+                                     help_text="Vide = titre actuel. Un retour à la ligne coupe le titre.")
+    hero_text_fr = models.TextField("Texte de la bannière (français)", blank=True)
+    hero_title_ar = models.TextField("Titre de la bannière (arabe)", blank=True)
+    hero_text_ar = models.TextField("Texte de la bannière (arabe)", blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "réglages du site"
+
+    def __str__(self):
+        return "Réglages du site"
+
+    @classmethod
+    def load(cls):
+        return cls.objects.get_or_create(pk=1)[0]

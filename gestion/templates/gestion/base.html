@@ -28,6 +28,7 @@
       <a href="{% url 'gestion:stock' %}" class="{% if section == 'stock' %}on{% endif %}">{% include "gestion/inc/icon.html" with i="warehouse" %}Stock</a>
       <div class="group">Pilotage</div>
       <a href="{% url 'gestion:finances' %}" class="{% if section == 'finances' %}on{% endif %}">{% include "gestion/inc/icon.html" with i="chart" %}Coûts et revenus</a>
+      <a href="{% url 'gestion:site' %}" class="{% if section == 'site' %}on{% endif %}">{% include "gestion/inc/icon.html" with i="edit" %}Site web</a>
       <a href="{% url 'gestion:publish' %}" class="{% if section == 'publish' %}on{% endif %}">{% include "gestion/inc/icon.html" with i="upload" %}Publier le site</a>
     </nav>
     <div class="foot">

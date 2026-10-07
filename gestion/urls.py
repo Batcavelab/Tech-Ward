@@ -51,4 +51,6 @@ urlpatterns = [
     path("finances/", views.finances, name="finances"),
     path("finances/depense/<int:pk>/", views.expense_edit, name="expense"),
     path("publier/", views.publish, name="publish"),
+    path("publier/site.zip", views.publish_zip, name="publish_zip"),
+    path("site-web/", views.site_settings, name="site"),
 ]
