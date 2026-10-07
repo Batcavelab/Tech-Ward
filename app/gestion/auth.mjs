@@ -4,6 +4,16 @@ import { insert } from "../model.mjs";
 import { checkPassword, hashPassword } from "../server.mjs";
 import { page, top } from "./ui.mjs";
 
+// The very first account needs this code, so nobody else can claim Gestion before you do.
+// Only its scrypt hash is here; the code itself was given to Youness. TECHWARD_SETUP_CODE on Netlify replaces it.
+const SETUP_CODE_HASH = "scrypt$51a2ccac8fc68ccb67716e4b1f06b70a$06944d1a75b11c0a91cdb307ed5d0a6fdeddc1f6def21e29fb150544a3b59750aefc12f61079e0bc71d760878ed98986227a7fa66ea4d1f797b5b53435725daf";
+
+function setupCodeOk(code) {
+  const own = process.env.TECHWARD_SETUP_CODE;
+  if (own) return code.trim().toUpperCase() === own.trim().toUpperCase();
+  return checkPassword(code.trim().toUpperCase(), SETUP_CODE_HASH);
+}
+
 function loginPage(ctx, { setup = false, error = "", username = "" } = {}) {
   return ctx.html(html`<!doctype html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
@@ -18,6 +28,7 @@ function loginPage(ctx, { setup = false, error = "", username = "" } = {}) {
   <div class="stack">
     <div class="field"><label for="id_username">Identifiant</label><input name="username" id="id_username" value="${username}" required autocomplete="username" autocapitalize="none"></div>
     <div class="field"><label for="id_password">Mot de passe</label><input type="password" name="password" id="id_password" required autocomplete="${setup ? "new-password" : "current-password"}"${setup ? html` minlength="8"` : ""}></div>
+    ${setup ? html`<div class="field"><label for="id_code">Code d'installation</label><input name="code" id="id_code" required autocomplete="off" autocapitalize="characters"></div>` : ""}
     ${setup ? html`<div class="field"><label for="id_password2">Confirmer le mot de passe</label><input type="password" name="password2" id="id_password2" required minlength="8" autocomplete="new-password"></div>` : ""}
   </div>
   <input type="hidden" name="next" value="${ctx.query.get("next") || ""}">
@@ -34,6 +45,7 @@ async function login(ctx) {
   const username = String(form.get("username") || "").trim();
   const password = String(form.get("password") || "");
   if (setup) {
+    if (!setupCodeOk(String(form.get("code") || ""))) return loginPage(ctx, { setup, username, error: "Code d'installation incorrect." });
     if (password.length < 8) return loginPage(ctx, { setup, username, error: "Le mot de passe doit faire au moins 8 caractères." });
     if (password !== form.get("password2")) return loginPage(ctx, { setup, username, error: "Les deux mots de passe ne sont pas identiques." });
     if (!username) return loginPage(ctx, { setup, error: "Choisissez un identifiant." });

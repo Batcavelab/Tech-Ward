@@ -16,7 +16,7 @@ Every change saved in Gestion is on the website at the next page load. There is 
 
 ## First use
 
-1. Open https://techward.netlify.app/gestion/ and create your login (the first visit asks for it).
+1. Open https://techward.netlify.app/gestion/ and create your login. The first visit asks for it, with the setup code Claude gave you in the project chat (or the value of a `TECHWARD_SETUP_CODE` environment variable set on Netlify).
 2. **Pilotage › Sauvegarde et import**: import `export-gestion.json` (the export of the old PC version) to bring back your customers, suppliers, devis, purchase orders and buying prices.
 
 Download a backup from the same page from time to time.
