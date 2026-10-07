@@ -1,0 +1,35 @@
+{% extends "gestion/base.html" %}{% load gestion %}
+{% block title %}Stock{% endblock %}
+{% block content %}
+<div class="top">
+  <div><div class="crumb">Achats et stock</div><h1>Stock et entrepôt</h1></div>
+  <div class="actions"><a class="btn primary" href="{% url 'gestion:order_new' %}?reappro=1">Réapprovisionner le stock bas</a></div>
+</div>
+{% include "gestion/inc/kpis.html" %}
+<div class="grid g-main">
+  <div class="card">
+    <form class="filters" method="get">
+      <input type="search" name="q" value="{{ q }}" placeholder="Produit, référence, emplacement…">
+      <div class="chips"><a href="?" class="{% if not flt %}on{% endif %}">Tous</a><a href="?filtre=alerte" class="{% if flt == 'alerte' %}on{% endif %}">Sous le seuil</a></div>
+    </form>
+    <div class="table-wrap"><table class="t">
+      <thead><tr><th>Produit</th><th>Emplacement</th><th class="num">Stock</th><th class="num">Seuil</th><th class="num">Prix d'achat</th><th class="num">Valeur</th><th></th></tr></thead>
+      <tbody>{% for a in articles %}<tr>
+        <td><a href="{% url 'gestion:product' a.product.pk %}">{{ a.product.name_fr }}</a><br><span class="small muted">{{ a.sku|default:a.product.brand }}</span></td>
+        <td>{{ a.location|default:"—" }}</td>
+        <td class="num"><span class="badge {% if a.stock <= 0 %}red{% elif a.stock <= a.min_stock %}warn{% else %}green{% endif %}">{{ a.stock }}</span></td>
+        <td class="num">{{ a.min_stock }}</td><td class="num">{{ a.cost_price|mad }}</td><td class="num">{{ a.value|mad }}</td>
+        <td class="num"><a class="btn sm" href="?produit={{ a.product.pk }}#ajuster">Ajuster</a></td>
+      </tr>{% empty %}<tr><td colspan="7" class="empty">Aucun produit.</td></tr>{% endfor %}</tbody>
+    </table></div>
+  </div>
+  <div class="stack">
+    <form class="card" method="post" id="ajuster">{% csrf_token %}<h2>Entrée, sortie ou inventaire</h2>
+      <div class="form-grid" style="grid-template-columns:1fr">{% for f in form %}{% include "gestion/inc/field.html" %}{% endfor %}</div>
+      <p class="small muted">Les réceptions de bons de commande et les devis réalisés mettent le stock à jour tout seuls. Utilisez ce formulaire pour le stock de départ, une casse ou un inventaire.</p>
+      <div class="form-actions"><button class="btn primary">Enregistrer</button></div>
+    </form>
+    <div class="card"><h2>Derniers mouvements</h2><table class="t"><tbody>{% for m in movements %}<tr><td><b>{{ m.product.name_fr }}</b><br><span class="small muted">{{ m.date|date:"d/m H:i" }} · {{ m.reason }}</span></td><td class="num"><span class="badge {% if m.quantity > 0 %}green{% else %}red{% endif %}">{% if m.quantity > 0 %}+{% endif %}{{ m.quantity }}</span></td></tr>{% empty %}<tr><td class="empty">Aucun mouvement.</td></tr>{% endfor %}</tbody></table></div>
+  </div>
+</div>
+{% endblock %}

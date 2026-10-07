@@ -1,0 +1,110 @@
+﻿{% extends "base.html" %}{% load static tw %}
+{% block content %}
+<section class="hero" style="--hero: url('{% if IS_RTL %}{% static 'img/photos/hero-rtl.jpg' %}{% else %}{% static 'img/photos/hero.jpg' %}{% endif %}')">
+  <div class="container hero-inner">
+    <h1>{% t "hero_title_1" %}<br>{% t "hero_title_2" %}</h1>
+    <p>{% t "hero_text" %}</p>
+    <div class="hero-ctas">
+      <a class="btn btn-navy" href="{% url 'shop:list' 'cameras' %}">{% t "hero_cta" %} {% include "includes/icon.html" with name="arrow" %}</a>
+      <a class="btn btn-light" href="{% url 'shop:packs' %}">{% t "hero_cta_2" %}</a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <p class="kicker">{% t "our_products" %}</p>
+        <h2>{% t "cameras_title" %}</h2>
+      </div>
+      <a class="link-arrow" href="{% url 'shop:list' %}">{% t "view_all" %} {% include "includes/icon.html" with name="arrow" %}</a>
+    </div>
+    <div class="grid grid-4">
+      {% for p in featured %}{% include "includes/card.html" %}{% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section section-tint placement">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <p class="kicker">{% t "place_kicker" %}</p>
+        <h2>{% t "place_title" %}</h2>
+        <p class="lead">{% t "place_text" %}</p>
+      </div>
+    </div>
+    <div class="placement-grid" data-close-label="{% t 'close' %}">
+      <figure class="placement-item"><a class="placement-zoom" href="{% static 'img/photos/placement-plan-hd.jpg' %}" data-zoom aria-label="{% t 'place_zoom' %}"><img src="{% static 'img/photos/placement-plan.jpg' %}" alt="{% t 'place_1_t' %}" width="1200" height="670" loading="lazy" decoding="async"></a><figcaption><h4>{% t "place_1_t" %}</h4><p>{% t "place_1" %}</p></figcaption></figure>
+      <figure class="placement-item"><a class="placement-zoom" href="{% static 'img/photos/placement-perimetre-hd.jpg' %}" data-zoom aria-label="{% t 'place_zoom' %}"><img src="{% static 'img/photos/placement-perimetre.jpg' %}" alt="{% t 'place_2_t' %}" width="727" height="727" loading="lazy" decoding="async"></a><figcaption><h4>{% t "place_2_t" %}</h4><p>{% t "place_2" %}</p></figcaption></figure>
+      <figure class="placement-item"><a class="placement-zoom" href="{% static 'img/photos/placement-nuit-hd.jpg' %}" data-zoom aria-label="{% t 'place_zoom' %}"><img src="{% static 'img/photos/placement-nuit.jpg' %}" alt="{% t 'place_3_t' %}" width="1200" height="717" loading="lazy" decoding="async"></a><figcaption><h4>{% t "place_3_t" %}</h4><p>{% t "place_3" %}</p></figcaption></figure>
+      <figure class="placement-item"><a class="placement-zoom" href="{% static 'img/photos/placement-interieur-hd.jpg' %}" data-zoom aria-label="{% t 'place_zoom' %}"><img src="{% static 'img/photos/placement-interieur.jpg' %}" alt="{% t 'place_4_t' %}" width="1200" height="896" loading="lazy" decoding="async"></a><figcaption><h4>{% t "place_4_t" %}</h4><p>{% t "place_4" %}</p></figcaption></figure>
+    </div>
+    <div class="placement-ctas">
+      <a class="btn btn-navy" href="{% url 'shop:packs' %}">{% t "place_cta" %} {% include "includes/icon.html" with name="arrow" %}</a>
+      <a class="btn btn-wa" href="{{ wa_visit_url }}" target="_blank" rel="noopener">{% include "includes/icon.html" with name="whatsapp" %}{% t "place_visit" %}</a>
+    </div>
+  </div>
+</section>
+
+{% include "includes/benefits.html" %}
+
+{% if packs %}
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <p class="kicker">{% t "packs_kicker" %}</p>
+        <h2>{% t "packs_title" %}</h2>
+        <p class="lead">{% t "packs_text" %}</p>
+      </div>
+      <a class="link-arrow" href="{% url 'shop:packs' %}">{% t "nav_packs" %} {% include "includes/icon.html" with name="arrow" %}</a>
+    </div>
+    <div class="grid grid-4">
+      {% for p in packs %}{% include "includes/pack_card.html" %}{% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% if services %}
+<section class="section section-tint">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <p class="kicker">{% t "security_kicker" %}</p>
+        <h2>{% t "security_title" %}</h2>
+        <p class="lead">{% t "security_text" %}</p>
+      </div>
+      <a class="link-arrow" href="{% url 'shop:security' %}">{% t "nav_security" %} {% include "includes/icon.html" with name="arrow" %}</a>
+    </div>
+    <div class="grid grid-4">
+      {% for p in services %}{% include "includes/card.html" %}{% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="section">
+  <div class="container">
+    <h2 class="center">{% t "how_title" %}</h2>
+    <ol class="steps">
+      <li><span>1</span><h4>{% t "how_1_t" %}</h4><p>{% t "how_1" %}</p></li>
+      <li><span>2</span><h4>{% t "how_2_t" %}</h4><p>{% t "how_2" %}</p></li>
+      <li><span>3</span><h4>{% t "how_3_t" %}</h4><p>{% t "how_3" %}</p></li>
+      <li><span>4</span><h4>{% t "how_4_t" %}</h4><p>{% t "how_4" %}</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="container cta-inner">
+    <div>
+      <h2>{% t "contact_title" %}</h2>
+      <p>{% t "contact_text" %}</p>
+    </div>
+    <a class="btn btn-wa" href="{{ wa_contact_url }}" target="_blank" rel="noopener">{% include "includes/icon.html" with name="whatsapp" %}{% t "write_whatsapp" %}</a>
+  </div>
+</section>
+{% endblock %}

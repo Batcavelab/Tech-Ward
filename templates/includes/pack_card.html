@@ -1,0 +1,11 @@
+{% load tw %}
+<article class="pack{% if p.featured %} pack-featured{% endif %}">
+  {% if p.featured %}<span class="pack-flag">{% t "most_popular" %}</span>{% endif %}
+  <h3><a href="{{ p.get_absolute_url }}">{{ p|tr:"name" }}</a></h3>
+  <p class="muted">{{ p|tr:"short" }}</p>
+  <div class="pack-price">{{ p.price|mad }}</div>
+  <ul class="checks">
+    {% for s in p.spec_list %}<li>{% include "includes/icon.html" with name="check" %}{{ s }}</li>{% endfor %}
+  </ul>
+  <button class="btn {% if p.featured %}btn-blue{% else %}btn-navy{% endif %} btn-block" type="button" data-add="{{ p.pk }}" data-name="{{ p|tr:'name' }}">{% include "includes/icon.html" with name="cart" %}{% t "add_to_cart" %}</button>
+</article>

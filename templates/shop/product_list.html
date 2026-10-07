@@ -1,0 +1,22 @@
+{% extends "base.html" %}{% load tw %}
+{% block title %}{% if current_name %}{{ current_name }}{% else %}{% t "nav_shop" %}{% endif %} · Tech-Ward{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <nav class="crumbs"><a href="{% url 'shop:home' %}">{% t "breadcrumb_home" %}</a> / {% t "nav_shop" %}</nav>
+    <h1 data-results-title="{% t 'results_for' %}">{% if current_name %}{{ current_name }}{% else %}{% t "all_products" %}{% endif %}</h1>
+  </div>
+</section>
+<section class="section section-tight">
+  <div class="container">
+    <div class="chips">
+      <a class="chip{% if not current %} active{% endif %}" href="{% url 'shop:list' %}">{% t "all_products" %}</a>
+      <a class="chip{% if current == 'cameras' %} active{% endif %}" href="{% url 'shop:list' 'cameras' %}">{% t "grp_cameras" %}</a>
+      {% for c in categories %}<a class="chip{% if current == c.slug %} active{% endif %}" href="{% url 'shop:list' c.slug %}">{{ c|tr:"name" }}</a>{% endfor %}
+    </div>
+    <div class="grid grid-4" data-searchable>{% for p in products %}{% include "includes/card.html" %}{% endfor %}</div>
+    <p class="empty" data-no-results {% if products %}hidden{% endif %}>{% t "no_results" %}</p>
+  </div>
+</section>
+{% include "includes/benefits.html" %}
+{% endblock %}

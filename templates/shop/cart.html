@@ -1,0 +1,63 @@
+{% extends "base.html" %}{% load static tw %}
+{% block title %}{% t "cart_title" %} · Tech-Ward{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <nav class="crumbs"><a href="{% url 'shop:home' %}">{% t "breadcrumb_home" %}</a> / {% t "cart" %}</nav>
+    <h1>{% t "cart_title" %}</h1>
+  </div>
+</section>
+<section class="section section-tight">
+  <div class="container" data-cart-page>
+    <div class="empty" data-cart-empty>
+      <p>{% t "cart_empty" %}</p>
+      <a class="btn btn-navy" href="{% url 'shop:list' %}">{% t "continue_shopping" %}</a>
+    </div>
+
+    <div class="cart-layout" data-cart-full hidden>
+      <div class="cart-lines">
+        <div data-cart-lines></div>
+        <a class="link-arrow" href="{% url 'shop:list' %}">{% t "continue_shopping" %} {% include "includes/icon.html" with name="arrow" %}</a>
+      </div>
+
+      <form class="checkout" data-checkout>
+        <div class="sum">
+          <span>{% t "subtotal" %}</span>
+          <strong data-cart-total></strong>
+        </div>
+        <p class="muted small" data-quote-note hidden>{% t "quote_items_note" %}</p>
+        <h3>{% t "your_details" %}</h3>
+        <label>{% t "your_name" %} *<input name="name" required maxlength="100" autocomplete="name"></label>
+        <label>{% t "your_city" %} *<input name="city" required maxlength="60" autocomplete="address-level2"></label>
+        <label>{% t "your_phone" %}<input name="phone" type="tel" maxlength="30" autocomplete="tel" dir="ltr"></label>
+        <label>{% t "your_notes" %}<textarea name="notes" rows="3" maxlength="500"></textarea></label>
+        <button class="btn btn-wa btn-block" type="submit">{% include "includes/icon.html" with name="whatsapp" %}{% t "order_button" %}</button>
+        <p class="muted small">{% t "order_note" %}</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+{# One row template per item; app.js copies the ones that are in the visitor's cart. #}
+{% for p in items %}
+<template data-cart-item="{{ p.pk }}" data-name="{{ p|tr:'name' }}" data-price="{{ p.price|default_if_none:'' }}">
+  <div class="cart-line">
+    <a class="cart-thumb" href="{{ p.get_absolute_url }}">
+      {% if p.image %}<img src="{{ p.image.url }}" alt="">{% elif p.mockup_photo %}<img src="{% static p.mockup_photo %}" alt="">{% else %}{% include "includes/art.html" with art=p.art uid=p.pk label="" %}{% endif %}
+    </a>
+    <div class="cart-info">
+      <a href="{{ p.get_absolute_url }}"><strong>{{ p|tr:"name" }}</strong></a>
+      <span class="muted">{{ p.price|mad }}</span>
+    </div>
+    <div class="stepper">
+      <button type="button" data-step="-1" aria-label="-">−</button>
+      <span data-qty></span>
+      <button type="button" data-step="1" aria-label="+">+</button>
+    </div>
+    <strong class="cart-total" data-line-total></strong>
+    <button type="button" class="icon-btn" data-remove aria-label="{% t 'remove' %}" title="{% t 'remove' %}">{% include "includes/icon.html" with name="trash" %}</button>
+  </div>
+</template>
+{% endfor %}
+{{ cart_data|json_script:"cart-data" }}
+{% endblock %}

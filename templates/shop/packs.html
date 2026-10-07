@@ -1,0 +1,28 @@
+{% extends "base.html" %}{% load tw %}
+{% block title %}{% t "nav_packs" %} · Tech-Ward{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <nav class="crumbs"><a href="{% url 'shop:home' %}">{% t "breadcrumb_home" %}</a> / {% t "nav_packs" %}</nav>
+    <p class="kicker">{% t "packs_kicker" %}</p>
+    <h1>{% t "packs_title" %}</h1>
+    <p class="lead">{% t "packs_text" %}</p>
+  </div>
+</section>
+<section class="section section-tight">
+  <div class="container">
+    <div class="grid grid-4">{% for p in packs %}{% include "includes/pack_card.html" %}{% endfor %}</div>
+    <div class="includes">
+      <h3>{% t "pack_includes" %}</h3>
+      <ul class="checks checks-inline">
+        <li>{% include "includes/icon.html" with name="check" %}{% t "pack_inc_1" %}</li>
+        <li>{% include "includes/icon.html" with name="check" %}{% t "pack_inc_2" %}</li>
+        <li>{% include "includes/icon.html" with name="check" %}{% t "pack_inc_3" %}</li>
+        <li>{% include "includes/icon.html" with name="check" %}{% t "pack_inc_4" %}</li>
+      </ul>
+      <p class="muted">{% t "packs_addons" %}</p>
+    </div>
+  </div>
+</section>
+{% include "includes/benefits.html" %}
+{% endblock %}

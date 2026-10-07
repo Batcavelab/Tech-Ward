@@ -1,0 +1,68 @@
+{% extends "gestion/base.html" %}{% load gestion %}
+{% block title %}{{ product|default:"Nouvel article" }}{% endblock %}
+{% block content %}
+<div class="top">
+  <div><div class="crumb">{% if kind == 'pack' %}<a href="{% url 'gestion:packs' %}">Packs</a>{% else %}<a href="{% url 'gestion:products' %}">Produits et prix</a>{% endif %}</div>
+  <h1>{% if product %}{{ product.name_fr }}{% elif kind == 'service' %}Nouveau service{% elif kind == 'pack' %}Nouveau pack{% else %}Nouveau produit{% endif %}</h1></div>
+  {% if product %}<div class="actions">{% if product.active %}<a class="btn" href="/fr/{% if kind == 'pack' %}packs/{% else %}produit/{{ product.slug }}/{% endif %}" target="_blank">Voir sur le site (local)</a>{% endif %}
+    {% if product.kind == 'product' %}<a class="btn" href="{% url 'gestion:stock' %}?produit={{ product.pk }}#ajuster">Ajuster le stock</a>{% endif %}</div>{% endif %}
+</div>
+{% if product %}<section class="kpis">
+  <div class="kpi"><div class="label">Prix de vente</div><div class="value">{{ product.price|mad }}</div>{% if product.old_price %}<div class="sub">au lieu de {{ product.old_price|mad }}</div>{% endif %}</div>
+  <div class="kpi"><div class="label">Coût</div><div class="value">{{ stats.cost|mad }}</div></div>
+  {% if product.kind == 'product' %}<div class="kpi {% if product.article.low %}warn{% endif %}"><div class="label">En stock</div><div class="value">{{ product.article.stock }}</div><div class="sub">Seuil d'alerte {{ product.article.min_stock }}</div></div>{% endif %}
+  <div class="kpi"><div class="label">Vendus</div><div class="value">{{ stats.sold }}</div><div class="sub">Devis réalisés</div></div>
+</section>{% endif %}
+<form method="post" enctype="multipart/form-data">{% csrf_token %}
+  {% if form.non_field_errors %}<div class="note">{{ form.non_field_errors }}</div>{% endif %}
+  <div class="grid g-main">
+    <div class="stack">
+      <div class="card"><h2>Français</h2><div class="form-grid">
+        {% include "gestion/inc/field.html" with f=form.name_fr wide=1 %}
+        {% include "gestion/inc/field.html" with f=form.short_fr wide=1 %}
+        {% include "gestion/inc/field.html" with f=form.specs_fr %}
+        {% include "gestion/inc/field.html" with f=form.description_fr %}
+      </div></div>
+      <div class="card"><h2>العربية</h2><div class="form-grid">
+        {% include "gestion/inc/field.html" with f=form.name_ar wide=1 %}
+        {% include "gestion/inc/field.html" with f=form.short_ar wide=1 %}
+        {% include "gestion/inc/field.html" with f=form.specs_ar %}
+        {% include "gestion/inc/field.html" with f=form.description_ar %}
+      </div></div>
+      {% block extra %}{% endblock %}
+    </div>
+    <div class="stack">
+      <div class="card"><h2>Prix et achat</h2><div class="form-grid" style="grid-template-columns:1fr">
+        {% include "gestion/inc/field.html" with f=form.price %}
+        {% include "gestion/inc/field.html" with f=aform.cost_price %}
+        {% include "gestion/inc/field.html" with f=form.old_price %}
+        {% include "gestion/inc/field.html" with f=aform.supplier %}
+      </div></div>
+      {% if kind != 'pack' %}<div class="card"><h2>Classement</h2><div class="form-grid" style="grid-template-columns:1fr">
+        {% include "gestion/inc/field.html" with f=form.category %}
+        {% include "gestion/inc/field.html" with f=form.brand %}
+      </div></div>{% endif %}
+      {% if kind == 'product' %}<div class="card"><h2>Stock</h2><div class="form-grid" style="grid-template-columns:1fr">
+        {% include "gestion/inc/field.html" with f=aform.sku %}
+        {% include "gestion/inc/field.html" with f=aform.min_stock %}
+        {% include "gestion/inc/field.html" with f=aform.location %}
+      </div></div>{% else %}<div style="display:none">{{ aform.sku }}{{ aform.min_stock }}{{ aform.location }}</div>{% endif %}
+      <div class="card"><h2>Sur le site</h2><div class="form-grid" style="grid-template-columns:1fr">
+        {% include "gestion/inc/field.html" with f=form.active %}
+        {% include "gestion/inc/field.html" with f=form.featured %}
+        {% include "gestion/inc/field.html" with f=form.image %}
+        {% if form.art %}{% include "gestion/inc/field.html" with f=form.art %}{% endif %}
+        {% include "gestion/inc/field.html" with f=form.order %}
+        {% include "gestion/inc/field.html" with f=form.slug %}
+      </div></div>
+    </div>
+  </div>
+  <div class="form-actions">
+    {% if product %}<button class="btn danger" form="del" data-confirm="Supprimer cet article ? S'il apparaît dans des devis ou commandes, il sera seulement masqué du site.">Supprimer</button>{% endif %}
+    <a class="btn" href="{% if kind == 'pack' %}{% url 'gestion:packs' %}{% else %}{% url 'gestion:products' %}{% endif %}">Annuler</a>
+    <button class="btn primary">Enregistrer</button>
+  </div>
+</form>
+{% if product %}<form id="del" method="post" action="{% url 'gestion:product_delete' product.pk %}">{% csrf_token %}</form>
+{% if stats.movements %}<div class="card" style="margin-top:16px"><h2>Derniers mouvements de stock</h2><table class="t"><tbody>{% for m in stats.movements %}<tr><td>{{ m.date|date:"d/m/Y H:i" }}</td><td>{{ m.reason }}</td><td class="num">{% if m.quantity > 0 %}+{% endif %}{{ m.quantity }}</td></tr>{% endfor %}</tbody></table></div>{% endif %}{% endif %}
+{% endblock %}

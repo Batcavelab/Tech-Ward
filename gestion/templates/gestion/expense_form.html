@@ -1,0 +1,10 @@
+{% extends "gestion/base.html" %}
+{% block title %}Dépense{% endblock %}
+{% block content %}
+<div class="top"><div><div class="crumb"><a href="{% url 'gestion:finances' %}">Coûts et revenus</a></div><h1>{{ expense.label }}</h1></div></div>
+<form class="card" method="post" style="max-width:640px">{% csrf_token %}
+  {% if expense.purchase_order %}<p class="note info">Dépense créée par le bon de commande <a href="{% url 'gestion:order' expense.purchase_order.pk %}">{{ expense.purchase_order }}</a>.</p>{% endif %}
+  <div class="form-grid">{% for f in form %}{% include "gestion/inc/field.html" %}{% endfor %}</div>
+  <div class="form-actions"><button class="btn danger" name="delete" value="1" data-confirm="Supprimer cette dépense ?">Supprimer</button><a class="btn" href="{% url 'gestion:finances' %}">Annuler</a><button class="btn primary">Enregistrer</button></div>
+</form>
+{% endblock %}

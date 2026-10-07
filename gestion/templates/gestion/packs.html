@@ -1,0 +1,24 @@
+{% extends "gestion/base.html" %}{% load gestion %}
+{% block title %}Packs{% endblock %}
+{% block content %}
+<div class="top">
+  <div><div class="crumb">Catalogue</div><h1>Packs d'installation</h1></div>
+  <div class="actions"><a class="btn primary" href="{% url 'gestion:pack_new' %}">{% include "gestion/inc/icon.html" with i="plus" %}Nouveau pack</a></div>
+</div>
+{% include "gestion/inc/kpis.html" %}
+<div class="grid g3">{% for r in rows %}
+  <div class="card">
+    <div class="card-head"><h2><a href="{% url 'gestion:pack' r.p.pk %}">{{ r.p.name_fr }}</a></h2>{% if r.p.active %}<span class="badge green">Visible</span>{% else %}<span class="badge">Masqué</span>{% endif %}</div>
+    <p class="small muted" style="margin:-4px 0 10px">{{ r.p.short_fr }}</p>
+    <div class="totals" style="width:100%">
+      <div><span>Prix de vente</span><b>{% if r.p.old_price %}<s class="muted small">{{ r.p.old_price|mad }}</s> {% endif %}{{ r.p.price|mad }}</b></div>
+      <div><span>Coût (matériel + pose)</span><span>{{ r.cost|mad }}</span></div>
+      <div><span>Marge</span>{% if r.margin_pct is not None %}<span class="badge {% if r.margin_pct < 15 %}red{% elif r.margin_pct < 30 %}warn{% else %}green{% endif %}">{{ r.margin_pct }} %</span>{% else %}<span class="muted">—</span>{% endif %}</div>
+      <div><span>Vendus</span><b>{{ r.sold }}</b></div>
+    </div>
+    <h3 style="margin-top:10px">Contenu</h3>
+    {% if r.items %}<ul class="small" style="margin:0;padding-left:18px">{% for i in r.items %}<li>{{ i.quantity }} × {{ i.component.name_fr }}</li>{% endfor %}</ul>
+    {% else %}<p class="small muted" style="margin:0">Pas encore de matériel lié. <a href="{% url 'gestion:pack' r.p.pk %}">Ajouter le contenu</a> pour suivre le stock et la marge.</p>{% endif %}
+  </div>
+{% empty %}<div class="card"><p class="muted">Aucun pack.</p></div>{% endfor %}</div>
+{% endblock %}

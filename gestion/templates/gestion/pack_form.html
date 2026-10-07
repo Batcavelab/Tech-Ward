@@ -1,0 +1,12 @@
+{% extends "gestion/product_form.html" %}{% load gestion %}
+{% block extra %}
+<div class="card"><h2>Contenu du pack</h2>
+  <p class="small muted" style="margin-top:-6px">Le matériel du pack sort du stock quand un devis contenant ce pack passe en « Réalisé et payé ». Le prix d'achat du pack (à droite) correspond à la pose et aux fournitures.</p>
+  {{ items.management_form }}
+  {% if items.non_form_errors %}<div class="note">{{ items.non_form_errors }}</div>{% endif %}
+  <table class="t lines"><thead><tr><th>Produit</th><th style="width:110px">Quantité</th><th class="del" style="width:70px">Retirer</th></tr></thead><tbody>
+  {% for f in items %}<tr>{% for h in f.hidden_fields %}{{ h }}{% endfor %}<td>{{ f.component }}{{ f.component.errors }}</td><td>{{ f.quantity }}</td><td class="del">{% if f.instance.pk %}{{ f.DELETE }}{% endif %}</td></tr>{% endfor %}
+  </tbody></table>
+  <p class="small muted">Enregistrez pour avoir plus de lignes vides.</p>
+</div>
+{% endblock %}

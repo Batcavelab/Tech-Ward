@@ -1,0 +1,8 @@
+<div class="legend"><span><i style="background:var(--rev)"></i>Chiffre d'affaires</span><span><i style="background:var(--cost)"></i>Dépenses</span></div>
+<div class="chart">
+  <svg viewBox="-56 -10 {{ chart.width|add:62 }} {{ chart.height|add:36 }}" role="img" aria-label="Chiffre d'affaires et dépenses par mois">
+    {% for t in chart.ticks %}<line class="grid-line" x1="0" x2="{{ chart.width }}" y1="{{ t.y }}" y2="{{ t.y }}"/><text class="tick" x="-8" y="{{ t.y }}" dy="4" text-anchor="end">{{ t.label }}</text>{% endfor %}
+    {% for b in chart.bars %}<rect class="{{ b.cls }}" x="{{ b.x }}" y="{{ b.y }}" width="{{ b.w }}" height="{{ b.h }}" rx="4" data-tip="{{ b.label }} · {% if b.cls == 'revenue' %}CA{% else %}Dépenses{% endif %} : {{ b.value }}"/>{% endfor %}
+    {% for l in chart.labels %}<text class="xlab" x="{{ l.x }}" y="{{ chart.height|add:22 }}">{{ l.text }}</text>{% endfor %}
+  </svg>
+</div>

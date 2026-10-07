@@ -1,0 +1,65 @@
+{% load static %}<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Gestion{% endblock %} · Tech-Ward</title>
+  <link rel="icon" href="{% static 'img/favicon.png' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'gestion/gestion.css' %}">
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <a class="brand" href="{% url 'gestion:dashboard' %}"><img src="{% static 'img/logo-mark.png' %}" alt=""><span>Tech-Ward<small>Gestion</small></span></a>
+    <nav>
+      <a href="{% url 'gestion:dashboard' %}" class="{% if section == 'dashboard' %}on{% endif %}">{% include "gestion/inc/icon.html" with i="home" %}Tableau de bord</a>
+      <div class="group">Ventes</div>
+      <a href="{% url 'gestion:quotes' %}" class="{% if section == 'quotes' %}on{% endif %}">{% include "gestion/inc/icon.html" with i="doc" %}Devis</a>
+      <a href="{% url 'gestion:customers' %}" class="{% if section == 'customers' %}on{% endif %}">{% include "gestion/inc/icon.html" with i="users" %}Clients</a>
+      <div class="group">Catalogue</div>
+      <a href="{% url 'gestion:products' %}" class="{% if section == 'products' %}on{% endif %}">{% include "gestion/inc/icon.html" with i="box" %}Produits et prix</a>
+      <a href="{% url 'gestion:packs' %}" class="{% if section == 'packs' %}on{% endif %}">{% include "gestion/inc/icon.html" with i="layers" %}Packs</a>
+      <a href="{% url 'gestion:offers' %}" class="{% if section == 'offers' %}on{% endif %}">{% include "gestion/inc/icon.html" with i="tag" %}Offres et promos</a>
+      <div class="group">Achats et stock</div>
+      <a href="{% url 'gestion:orders' %}" class="{% if section == 'orders' %}on{% endif %}">{% include "gestion/inc/icon.html" with i="cart" %}Bons de commande</a>
+      <a href="{% url 'gestion:suppliers' %}" class="{% if section == 'suppliers' %}on{% endif %}">{% include "gestion/inc/icon.html" with i="truck" %}Fournisseurs</a>
+      <a href="{% url 'gestion:stock' %}" class="{% if section == 'stock' %}on{% endif %}">{% include "gestion/inc/icon.html" with i="warehouse" %}Stock</a>
+      <div class="group">Pilotage</div>
+      <a href="{% url 'gestion:finances' %}" class="{% if section == 'finances' %}on{% endif %}">{% include "gestion/inc/icon.html" with i="chart" %}Coûts et revenus</a>
+      <a href="{% url 'gestion:publish' %}" class="{% if section == 'publish' %}on{% endif %}">{% include "gestion/inc/icon.html" with i="upload" %}Publier le site</a>
+    </nav>
+    <div class="foot">
+      Connecté : {{ user.get_username }}<br>
+      <form method="post" action="{% url 'gestion:logout' %}">{% csrf_token %}<button>Se déconnecter</button></form>
+    </div>
+  </aside>
+  <main class="main">
+    {% if messages %}<ul class="msgs">{% for m in messages %}<li class="{{ m.tags }}">{{ m }}</li>{% endfor %}</ul>{% endif %}
+    {% block content %}{% endblock %}
+  </main>
+</div>
+<div class="tip" id="tip"></div>
+<script>
+// Chart tooltips: any element with data-tip.
+(function () {
+  var tip = document.getElementById("tip");
+  document.addEventListener("mousemove", function (e) {
+    var el = e.target.closest && e.target.closest("[data-tip]");
+    if (!el) { tip.style.display = "none"; return; }
+    tip.textContent = el.getAttribute("data-tip");
+    tip.style.display = "block";
+    tip.style.left = Math.min(e.clientX + 12, window.innerWidth - tip.offsetWidth - 8) + "px";
+    tip.style.top = (e.clientY - 34) + "px";
+  });
+  // Confirmation on buttons with data-confirm.
+  document.addEventListener("click", function (e) {
+    var el = e.target.closest && e.target.closest("[data-confirm]");
+    if (el && !confirm(el.getAttribute("data-confirm"))) e.preventDefault();
+  });
+})();
+</script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

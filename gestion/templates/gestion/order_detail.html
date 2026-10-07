@@ -1,0 +1,50 @@
+{% extends "gestion/base.html" %}{% load gestion %}
+{% block title %}{{ order.number }}{% endblock %}
+{% block content %}
+<div class="top">
+  <div><div class="crumb"><a href="{% url 'gestion:orders' %}">Bons de commande</a></div><h1>{{ order.number }} <span class="badge {{ order.status|status_class }}" style="vertical-align:middle">{{ order.get_status_display }}</span></h1></div>
+  <div class="actions">
+    <a class="btn" href="{% url 'gestion:order_pdf' order.pk %}" target="_blank">{% include "gestion/inc/icon.html" with i="pdf" %}Voir le PDF</a>
+    <form class="inline" method="post" action="{% url 'gestion:order_status' order.pk %}" id="wa-form">{% csrf_token %}<input type="hidden" name="status" value="{% if order.status == 'brouillon' %}envoye{% else %}{{ order.status }}{% endif %}"><input type="hidden" name="url" value="{{ wa_url }}">
+      <button class="btn wa" {% if not order.supplier.phone %}disabled title="Ajoutez un téléphone sur la fiche fournisseur"{% endif %}>{% include "gestion/inc/icon.html" with i="wa" %}Envoyer par WhatsApp</button></form>
+    {% if can_email %}<form class="inline" method="post" action="{% url 'gestion:order_email' order.pk %}">{% csrf_token %}<button class="btn" {% if not order.supplier.email %}disabled{% endif %}>{% include "gestion/inc/icon.html" with i="mail" %}Envoyer par email</button></form>
+    {% else %}<a class="btn" href="{{ mail_url }}" id="mail-link">{% include "gestion/inc/icon.html" with i="mail" %}Email</a>{% endif %}
+    {% if order.status != 'recu' %}<a class="btn" href="{% url 'gestion:order_edit' order.pk %}">{% include "gestion/inc/icon.html" with i="edit" %}Modifier</a>{% endif %}
+  </div>
+</div>
+<div class="grid g-main">
+  <div class="card">
+    <div class="doc-head">
+      <div><div class="k">Fournisseur</div><div class="v"><a href="{% url 'gestion:supplier' order.supplier.pk %}">{{ order.supplier }}</a></div><div class="small muted">{{ order.supplier.phone }} {{ order.supplier.email }}</div></div>
+      <div><div class="k">Date</div><div class="v">{{ order.date|date:"d/m/Y" }}</div></div>
+      <div><div class="k">{% if order.received_date %}Reçu le{% else %}Livraison souhaitée{% endif %}</div><div class="v">{% if order.received_date %}{{ order.received_date|date:"d/m/Y" }}{% else %}{{ order.expected_date|date:"d/m/Y"|default:"—" }}{% endif %}</div></div>
+    </div>
+    <div class="table-wrap"><table class="t">
+      <thead><tr><th>Article</th><th class="num">Qté</th><th class="num">Prix unitaire</th><th class="num">Total</th></tr></thead>
+      <tbody>{% for l in lines %}<tr><td>{{ l.product }}</td><td class="num">{{ l.quantity }}</td><td class="num">{{ l.unit_cost|mad }}</td><td class="num">{{ l.total|mad }}</td></tr>{% empty %}<tr><td colspan="4" class="empty">Aucune ligne.</td></tr>{% endfor %}</tbody>
+      <tfoot><tr><td colspan="3">Total</td><td class="num">{{ order.total|mad }}</td></tr></tfoot>
+    </table></div>
+    {% if order.notes %}<p class="small" style="white-space:pre-line"><b>Notes :</b> {{ order.notes }}</p>{% endif %}
+  </div>
+  <div class="card"><h2>Suivi</h2>
+    {% if order.status == 'recu' %}<p class="note info">Marchandise reçue : le stock, les prix d'achat et les dépenses ont été mis à jour.</p>
+    {% else %}
+    <form method="post" action="{% url 'gestion:order_status' order.pk %}" class="steps">{% csrf_token %}
+      <button name="status" value="brouillon" class="{% if order.status == 'brouillon' %}on{% endif %}">Brouillon</button>
+      <button name="status" value="envoye" class="{% if order.status == 'envoye' %}on{% endif %}">Envoyé</button>
+      <button name="status" value="annule" class="{% if order.status == 'annule' %}on{% endif %}">Annulé</button>
+    </form>
+    <form method="post" action="{% url 'gestion:order_status' order.pk %}" style="margin-top:14px">{% csrf_token %}
+      <button class="btn primary" name="status" value="recu" data-confirm="Confirmer la réception ? Les quantités seront ajoutées au stock et le montant compté en dépense.">Marchandise reçue</button>
+    </form>
+    <p class="small muted">« Marchandise reçue » ajoute les quantités au stock, met à jour les prix d'achat et enregistre la dépense.</p>{% endif %}
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+function downloadPdf() { var a = document.createElement("a"); a.href = "{% url 'gestion:order_pdf' order.pk %}?dl=1"; a.download = ""; document.body.appendChild(a); a.click(); a.remove(); }
+document.getElementById("wa-form").addEventListener("submit", function () { downloadPdf(); this.target = "_blank"; setTimeout(function () { location.reload(); }, 1500); });
+var mail = document.getElementById("mail-link"); if (mail) mail.addEventListener("click", downloadPdf);
+</script>
+{% endblock %}

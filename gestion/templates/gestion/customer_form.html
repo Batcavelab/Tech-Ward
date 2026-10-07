@@ -1,0 +1,20 @@
+{% extends "gestion/base.html" %}{% load gestion %}
+{% block title %}{{ customer|default:"Nouveau client" }}{% endblock %}
+{% block content %}
+<div class="top">
+  <div><div class="crumb"><a href="{% url 'gestion:customers' %}">Clients</a></div><h1>{{ customer|default:"Nouveau client" }}</h1></div>
+  {% if customer %}<div class="actions"><a class="btn primary" href="{% url 'gestion:quote_new' %}?client={{ customer.pk }}">{% include "gestion/inc/icon.html" with i="plus" %}Nouveau devis</a></div>{% endif %}
+</div>
+{% include "gestion/inc/kpis.html" %}
+<div class="grid {% if customer %}g-main{% endif %}">
+  <form class="card" method="post">{% csrf_token %}
+    <h2>Coordonnées</h2>
+    <div class="form-grid">{% for f in form %}{% if f.name == "notes" or f.name == "address" %}{% include "gestion/inc/field.html" with wide=1 %}{% else %}{% include "gestion/inc/field.html" %}{% endif %}{% endfor %}</div>
+    <div class="form-actions"><a class="btn" href="{% url 'gestion:customers' %}">Annuler</a><button class="btn primary">Enregistrer</button></div>
+  </form>
+  {% if customer %}<div class="card"><h2>Devis</h2>
+    <table class="t"><tbody>{% for q in quotes %}<tr><td><a href="{% url 'gestion:quote' q.pk %}">{{ q.number }}</a><br><span class="small muted">{{ q.date|date:"d/m/Y" }}</span></td><td><span class="badge {{ q.status|status_class }}">{{ q.get_status_display }}</span></td><td class="num">{{ q.total_ttc|mad }}</td></tr>
+    {% empty %}<tr><td class="empty">Aucun devis.</td></tr>{% endfor %}</tbody></table>
+  </div>{% endif %}
+</div>
+{% endblock %}

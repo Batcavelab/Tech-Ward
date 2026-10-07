@@ -1,0 +1,27 @@
+{% extends "gestion/base.html" %}
+{% block title %}{{ offer|default:"Nouvelle offre" }}{% endblock %}
+{% block content %}
+<div class="top"><div><div class="crumb"><a href="{% url 'gestion:offers' %}">Offres et promos</a></div><h1>{{ offer|default:"Nouvelle offre" }}</h1></div></div>
+<form method="post">{% csrf_token %}
+  <div class="card"><div class="form-grid">
+    {% include "gestion/inc/field.html" with f=form.name %}
+    {% include "gestion/inc/field.html" with f=form.start_date %}
+    {% include "gestion/inc/field.html" with f=form.end_date %}
+    {% include "gestion/inc/field.html" with f=form.active %}
+    {% include "gestion/inc/field.html" with f=form.description wide=1 %}
+  </div></div>
+  <div class="card"><h2>Articles en promotion</h2>
+    {{ items.management_form }}
+    {% if items.non_form_errors %}<div class="note">{{ items.non_form_errors }}</div>{% endif %}
+    <table class="t lines"><thead><tr><th>Produit ou pack</th><th style="width:200px">Prix promo (MAD)</th><th class="del" style="width:70px">Retirer</th></tr></thead><tbody>
+    {% for f in items %}<tr>{% for h in f.hidden_fields %}{{ h }}{% endfor %}<td>{{ f.product }}{{ f.product.errors }}</td><td>{{ f.offer_price }}{{ f.offer_price.errors }}</td><td class="del">{% if f.instance.pk %}{{ f.DELETE }}{% endif %}</td></tr>{% endfor %}
+    </tbody></table>
+    <p class="small muted">Enregistrez pour avoir plus de lignes vides.</p>
+  </div>
+  <div class="form-actions">
+    {% if offer %}<button class="btn danger" form="del" data-confirm="Supprimer cette offre et remettre les prix habituels ?">Supprimer</button>{% endif %}
+    <a class="btn" href="{% url 'gestion:offers' %}">Annuler</a><button class="btn primary">Enregistrer</button>
+  </div>
+</form>
+{% if offer %}<form id="del" method="post" action="{% url 'gestion:offer_delete' offer.pk %}">{% csrf_token %}</form>{% endif %}
+{% endblock %}

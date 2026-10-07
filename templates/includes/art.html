@@ -1,0 +1,120 @@
+{# Placeholder drawing until a real photo is uploaded in the admin. Usage: include with art=product.art #}
+<svg class="art" viewBox="0 0 400 300" role="img" aria-label="{{ label }}" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg-{{ uid }}" x1="0" y1="0" x2="0" y2="1">
+      {% if art == "bullet" or art == "ptz" or art == "doorbell" or art == "siren" %}<stop offset="0" stop-color="#cfe1f6"/><stop offset="1" stop-color="#f3f7fc"/>{% else %}<stop offset="0" stop-color="#f6f8fb"/><stop offset="1" stop-color="#e6edf6"/>{% endif %}
+    </linearGradient>
+    <linearGradient id="body-{{ uid }}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#dfe5ee"/></linearGradient>
+    <radialGradient id="lens-{{ uid }}" cx=".4" cy=".35" r=".7"><stop offset="0" stop-color="#3a4a63"/><stop offset=".55" stop-color="#121c2c"/><stop offset="1" stop-color="#05090f"/></radialGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#bg-{{ uid }})"/>
+  {% if art == "bullet" or art == "ptz" or art == "doorbell" or art == "siren" %}
+    <rect x="330" y="0" width="70" height="300" fill="#c9ced6"/><rect x="330" y="0" width="8" height="300" fill="#b3b9c3"/>
+    <path d="M0 250c40-30 70-10 95-30s50-5 70 0v80H0z" fill="#9db7a0" opacity=".55"/>
+  {% endif %}
+  <ellipse cx="200" cy="268" rx="120" ry="10" fill="#0f1b2d" opacity=".08"/>
+
+  {% if art == "indoor" %}
+    <path d="M168 205h64l14 52h-92z" fill="url(#body-{{ uid }})" stroke="#cfd6e1"/>
+    <ellipse cx="200" cy="258" rx="58" ry="10" fill="#e9eef5" stroke="#cfd6e1"/>
+    <rect x="128" y="62" width="144" height="150" rx="46" fill="url(#body-{{ uid }})" stroke="#d3dae4"/>
+    <circle cx="200" cy="132" r="46" fill="#0f1b2d"/><circle cx="200" cy="132" r="32" fill="url(#lens-{{ uid }})"/>
+    <circle cx="200" cy="132" r="15" fill="#1d74d8" opacity=".85"/><circle cx="192" cy="123" r="6" fill="#fff" opacity=".7"/>
+    <circle cx="200" cy="190" r="3" fill="#1d74d8"/>
+  {% elif art == "bullet" %}
+    <rect x="318" y="98" width="22" height="80" rx="6" fill="#f3f5f8" stroke="#cfd6e1"/>
+    <path d="M318 130h-38l-12 14h50z" fill="#e9edf3" stroke="#cfd6e1"/>
+    <g transform="rotate(-10 200 150)">
+      <rect x="70" y="105" width="210" height="84" rx="38" fill="url(#body-{{ uid }})" stroke="#cfd6e1"/>
+      <path d="M58 100h200c10 0 14 6 14 12v4H58c-8 0-8-16 0-16z" fill="#fbfcfd" stroke="#cfd6e1"/>
+      <ellipse cx="88" cy="147" rx="24" ry="40" fill="#111a29"/>
+      <circle cx="90" cy="147" r="24" fill="url(#lens-{{ uid }})"/><circle cx="90" cy="147" r="11" fill="#1d74d8" opacity=".8"/><circle cx="84" cy="140" r="5" fill="#fff" opacity=".7"/>
+      <text x="150" y="152" font-family="Inter,Arial" font-size="13" font-weight="700" fill="#0f1b2d">TECH-WARD</text>
+    </g>
+  {% elif art == "ptz" %}
+    <path d="M330 80h-120v24h106" fill="#f4f6f9" stroke="#cfd6e1"/>
+    <rect x="186" y="80" width="34" height="58" fill="#eef1f6" stroke="#cfd6e1"/>
+    <path d="M136 138h134v32c0 6-5 10-10 10H146c-5 0-10-4-10-10z" fill="url(#body-{{ uid }})" stroke="#cfd6e1"/>
+    <path d="M140 178h126c0 50-28 80-63 80s-63-30-63-80z" fill="#111a29"/>
+    <path d="M150 182h106c0 40-23 64-53 64s-53-24-53-64z" fill="url(#lens-{{ uid }})"/>
+    <circle cx="203" cy="214" r="16" fill="#1d74d8" opacity=".85"/><circle cx="197" cy="208" r="6" fill="#fff" opacity=".6"/>
+  {% elif art == "doorbell" %}
+    <rect x="160" y="40" width="80" height="220" rx="34" fill="#18202c"/>
+    <rect x="167" y="47" width="66" height="206" rx="28" fill="#232d3c"/>
+    <circle cx="200" cy="96" r="20" fill="url(#lens-{{ uid }})"/><circle cx="200" cy="96" r="8" fill="#1d74d8"/>
+    <circle cx="200" cy="200" r="20" fill="none" stroke="#3fa0ff" stroke-width="5"/><circle cx="200" cy="200" r="12" fill="#2a3546"/>
+  {% elif art == "nvr" or art == "hdd" %}
+    {% if art == "nvr" %}
+      <path d="M70 150 200 110l130 40-130 40z" fill="#2a3546"/>
+      <path d="M70 150v40l130 40v-40z" fill="#18202c"/><path d="M330 150v40l-130 40v-40z" fill="#222c3a"/>
+      <circle cx="96" cy="182" r="3" fill="#36d27a"/><circle cx="108" cy="186" r="3" fill="#1d74d8"/><circle cx="120" cy="190" r="3" fill="#1d74d8"/>
+      <text x="135" y="209" font-family="Inter,Arial" font-size="11" font-weight="700" fill="#9fb3cf" transform="rotate(17 135 209)">NVR</text>
+    {% else %}
+      <rect x="120" y="70" width="160" height="190" rx="12" fill="#c4cad3" stroke="#a9b1bd"/>
+      <rect x="132" y="82" width="136" height="110" rx="6" fill="#18202c"/>
+      <text x="146" y="128" font-family="Inter,Arial" font-size="20" font-weight="800" fill="#fff">2 TB</text>
+      <text x="146" y="152" font-family="Inter,Arial" font-size="11" fill="#7fb4ff">SURVEILLANCE</text>
+      <rect x="146" y="214" width="108" height="10" rx="3" fill="#9aa3b0"/>
+    {% endif %}
+  {% elif art == "alarm" or art == "keypad" or art == "finger" %}
+    <rect x="135" y="40" width="130" height="220" rx="16" fill="url(#body-{{ uid }})" stroke="#cfd6e1"/>
+    {% if art == "finger" %}
+      <rect x="152" y="58" width="96" height="70" rx="6" fill="#18202c"/><rect x="160" y="66" width="80" height="54" rx="3" fill="#1d74d8" opacity=".55"/>
+      <rect x="168" y="150" width="64" height="80" rx="30" fill="#18202c"/>
+      <g fill="none" stroke="#3fa0ff" stroke-width="2.5" stroke-linecap="round"><path d="M186 205c0-18 4-30 14-30s14 12 14 30"/><path d="M193 210c0-15 2-25 7-25s7 10 7 25"/><path d="M178 196c2-20 10-32 22-32s20 12 22 32"/></g>
+    {% else %}
+      <rect x="152" y="58" width="96" height="44" rx="6" fill="#18202c"/>
+      <text x="162" y="86" font-family="Inter,Arial" font-size="15" font-weight="700" fill="{% if art == 'alarm' %}#36d27a{% else %}#7fb4ff{% endif %}">{% if art == "alarm" %}ARMED{% else %}• • • •{% endif %}</text>
+      <g fill="#e8edf4" stroke="#cfd6e1"><rect x="156" y="118" width="24" height="20" rx="4"/><rect x="188" y="118" width="24" height="20" rx="4"/><rect x="220" y="118" width="24" height="20" rx="4"/><rect x="156" y="146" width="24" height="20" rx="4"/><rect x="188" y="146" width="24" height="20" rx="4"/><rect x="220" y="146" width="24" height="20" rx="4"/><rect x="156" y="174" width="24" height="20" rx="4"/><rect x="188" y="174" width="24" height="20" rx="4"/><rect x="220" y="174" width="24" height="20" rx="4"/><rect x="156" y="202" width="24" height="20" rx="4"/><rect x="188" y="202" width="24" height="20" rx="4"/><rect x="220" y="202" width="24" height="20" rx="4"/></g>
+      <circle cx="200" cy="244" r="5" fill="#1d74d8"/>
+    {% endif %}
+  {% elif art == "sensor" %}
+    <rect x="150" y="70" width="100" height="160" rx="22" fill="url(#body-{{ uid }})" stroke="#cfd6e1"/>
+    <ellipse cx="200" cy="140" rx="34" ry="40" fill="#e3e8ef" stroke="#cfd6e1"/>
+    <path d="M170 128h60M168 140h64M170 152h60" stroke="#ccd3de" stroke-width="2"/>
+    <circle cx="200" cy="205" r="4" fill="#e04848"/>
+  {% elif art == "siren" %}
+    <rect x="135" y="85" width="130" height="150" rx="18" fill="url(#body-{{ uid }})" stroke="#cfd6e1"/>
+    <path d="M150 85h100l-10-30h-80z" fill="#ff7a3d" opacity=".9"/>
+    <path d="M200 35v-14M160 42l-8-10M240 42l8-10" stroke="#ff7a3d" stroke-width="4" stroke-linecap="round"/>
+    <g fill="#d5dbe4"><rect x="160" y="120" width="80" height="6" rx="3"/><rect x="160" y="138" width="80" height="6" rx="3"/><rect x="160" y="156" width="80" height="6" rx="3"/><rect x="160" y="174" width="80" height="6" rx="3"/><rect x="160" y="192" width="80" height="6" rx="3"/><rect x="160" y="210" width="80" height="6" rx="3"/></g>
+  {% elif art == "intercom" %}
+    <rect x="70" y="70" width="190" height="140" rx="12" fill="#18202c"/>
+    <rect x="80" y="80" width="140" height="120" rx="4" fill="#2c4d7a"/>
+    <circle cx="150" cy="128" r="22" fill="#9cc0ea"/><path d="M110 200c4-28 22-42 40-42s36 14 40 42z" fill="#9cc0ea"/>
+    <circle cx="240" cy="110" r="8" fill="#36d27a"/><circle cx="240" cy="140" r="8" fill="#3fa0ff"/>
+    <rect x="285" y="90" width="60" height="150" rx="10" fill="#c4cad3" stroke="#a9b1bd"/>
+    <circle cx="315" cy="120" r="12" fill="url(#lens-{{ uid }})"/><rect x="300" y="180" width="30" height="30" rx="6" fill="#e8edf4"/>
+  {% elif art == "lock" %}
+    <rect x="120" y="30" width="160" height="250" fill="#b48b5e"/><rect x="128" y="38" width="144" height="242" fill="#c49a6c"/>
+    <rect x="215" y="70" width="50" height="170" rx="12" fill="#18202c"/>
+    <rect x="223" y="82" width="34" height="60" rx="4" fill="#253248"/>
+    <g fill="#3fa0ff"><circle cx="230" cy="96" r="2.5"/><circle cx="240" cy="96" r="2.5"/><circle cx="250" cy="96" r="2.5"/><circle cx="230" cy="110" r="2.5"/><circle cx="240" cy="110" r="2.5"/><circle cx="250" cy="110" r="2.5"/><circle cx="230" cy="124" r="2.5"/><circle cx="240" cy="124" r="2.5"/><circle cx="250" cy="124" r="2.5"/></g>
+    <rect x="160" y="150" width="70" height="16" rx="8" fill="#2a3546"/>
+    <circle cx="240" cy="200" r="12" fill="#253248" stroke="#3fa0ff" stroke-width="2"/>
+  {% elif art == "cable" %}
+    <circle cx="200" cy="150" r="90" fill="#1d74d8"/><circle cx="200" cy="150" r="78" fill="none" stroke="#3a8ae6" stroke-width="6"/>
+    <circle cx="200" cy="150" r="62" fill="none" stroke="#3a8ae6" stroke-width="6"/><circle cx="200" cy="150" r="38" fill="#eef3fa"/>
+    <path d="M280 180c40 10 60 40 50 70" stroke="#1d74d8" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <rect x="316" y="240" width="28" height="22" rx="4" fill="#dfe5ee" stroke="#a9b1bd"/>
+  {% elif art == "pack" %}
+    <path d="M90 200 200 170l110 30-110 30z" fill="#2a3546"/><path d="M90 200v26l110 30v-26z" fill="#18202c"/><path d="M310 200v26l-110 30v-26z" fill="#222c3a"/>
+    <g transform="translate(40 70) rotate(-8 60 40)">
+      <rect x="20" y="20" width="100" height="44" rx="20" fill="url(#body-{{ uid }})" stroke="#cfd6e1"/>
+      <circle cx="34" cy="42" r="14" fill="url(#lens-{{ uid }})"/><circle cx="34" cy="42" r="6" fill="#1d74d8"/>
+    </g>
+    <g transform="translate(140 40) rotate(-8 60 40)">
+      <rect x="20" y="20" width="100" height="44" rx="20" fill="url(#body-{{ uid }})" stroke="#cfd6e1"/>
+      <circle cx="34" cy="42" r="14" fill="url(#lens-{{ uid }})"/><circle cx="34" cy="42" r="6" fill="#1d74d8"/>
+    </g>
+    <g transform="translate(240 70) rotate(-8 60 40)">
+      <rect x="20" y="20" width="100" height="44" rx="20" fill="url(#body-{{ uid }})" stroke="#cfd6e1"/>
+      <circle cx="34" cy="42" r="14" fill="url(#lens-{{ uid }})"/><circle cx="34" cy="42" r="6" fill="#1d74d8"/>
+    </g>
+  {% else %}
+    <circle cx="200" cy="145" r="80" fill="#e3ecf8"/>
+    <path d="M200 80 145 102v40c0 34 24 62 55 70 31-8 55-36 55-70v-40z" fill="#16243a"/>
+    <path d="M200 80v132c31-8 55-36 55-70v-40z" fill="#1d74d8"/>
+    <path d="m176 146 16 16 32-34" stroke="#fff" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  {% endif %}
+</svg>

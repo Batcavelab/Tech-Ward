@@ -1,0 +1,28 @@
+{% extends "base.html" %}{% load tw %}
+{% block title %}{% t "nav_security" %} · Tech-Ward{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <nav class="crumbs"><a href="{% url 'shop:home' %}">{% t "breadcrumb_home" %}</a> / {% t "nav_security" %}</nav>
+    <p class="kicker">{% t "security_kicker" %}</p>
+    <h1>{% t "security_title" %}</h1>
+    <p class="lead">{% t "security_text" %}</p>
+  </div>
+</section>
+<section class="section section-tight">
+  <div class="container">
+    <div class="grid grid-4">{% for p in services %}{% include "includes/card.html" %}{% endfor %}</div>
+  </div>
+</section>
+{% if products %}
+<section class="section section-tint">
+  <div class="container">
+    <div class="section-head">
+      <h2>{% t "grp_alarm" %} · {% t "grp_access" %}</h2>
+      <a class="link-arrow" href="{% url 'shop:list' 'access' %}">{% t "view_all" %} {% include "includes/icon.html" with name="arrow" %}</a>
+    </div>
+    <div class="grid grid-4">{% for p in products %}{% include "includes/card.html" %}{% endfor %}</div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}
