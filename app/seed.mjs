@@ -1,4 +1,5 @@
-{
+// The catalogue the site starts with (public fields only). Gestion › Sauvegarde et import replaces it.
+export default {
  "categories": [
   {
    "id": 1,
@@ -661,4 +662,4 @@
    "order": 26
   }
  ]
-}
+};

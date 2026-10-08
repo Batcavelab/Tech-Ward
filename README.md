@@ -10,7 +10,7 @@ Every change saved in Gestion is on the website at the next page load. There is 
 ## How it runs
 
 - `netlify/functions/app.mjs` answers every address that isn't a file in `public/`. It calls `app/server.mjs`.
-- The data is one JSON document plus the uploaded pictures, kept in **Netlify Blobs** on the site (`app/storage.mjs`). The first visit creates it from the catalogue in `app/seed.json`.
+- The data is one JSON document plus the uploaded pictures, kept in **Netlify Blobs** on the site (`app/storage.mjs`). The first visit creates it from the catalogue in `app/seed.mjs`.
 - `public/static/` holds the CSS, JavaScript and images, served directly by Netlify.
 - Pushing to the `main` branch on GitHub makes Netlify deploy the new version. The data is not in the code, so a deploy never erases it.
 

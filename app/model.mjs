@@ -1,7 +1,7 @@
 // The data (one JSON document) and the business rules: offers, stock, devis, purchase orders, figures.
 // Money is MAD as plain numbers, rounded to 2 decimals. Dates are "YYYY-MM-DD" in Moroccan time.
-import { readFileSync } from "node:fs";
 import { randomBytes } from "node:crypto";
+import seed from "./seed.mjs";
 
 export const TABLES = ["categories", "products", "packItems", "offers", "offerItems", "customers", "suppliers",
   "quotes", "quoteLines", "orders", "orderLines", "expenses", "movements", "users"];
@@ -53,7 +53,6 @@ export function emptyDb() {
 
 export function seededDb() {
   const db = emptyDb();
-  const seed = JSON.parse(readFileSync(new URL("./seed.json", import.meta.url), "utf8"));
   db.categories = seed.categories;
   db.products = seed.products.map((p) => ({ ...PRODUCT_PRIVATE, ...p }));
   fixSeq(db);

@@ -1,6 +1,6 @@
 // Devis and purchase orders as PDF, with no dependencies (replaces the reportlab version).
 // Standard Helvetica fonts in WinAnsi encoding, the logo embedded as an RGB image with an alpha mask.
-import { readFileSync } from "node:fs";
+import LOGO_BASE64 from "./logo.mjs";
 import { inflateSync, deflateSync } from "node:zlib";
 
 const MM = 72 / 25.4;
@@ -118,7 +118,7 @@ function loadLogo() {
   if (logoCache !== undefined) return logoCache;
   logoCache = null;
   try {
-    const png = readFileSync(new URL("../public/static/img/logo-full.png", import.meta.url));
+    const png = Buffer.from(LOGO_BASE64, "base64");
     let pos = 8, width, height, depth, type, interlace;
     const idat = [];
     while (pos < png.length) {

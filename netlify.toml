@@ -7,4 +7,4 @@
 
 [functions]
   directory = "netlify/functions"
-  included_files = ["app/seed.json", "public/static/img/logo-full.png"]
+

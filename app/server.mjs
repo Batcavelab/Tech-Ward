@@ -128,7 +128,7 @@ const ROUTES = [...gestionRoutes, ...shopRoutes];
 async function loadDb(store) {
   let found = await store.readJSON("db");
   if (!found) {
-    // Very first visit: start from the catalog in seed.json.
+    // Very first visit: start from the catalog in seed.mjs.
     await store.writeJSON("db", seededDb(), null);
     found = await store.readJSON("db");
   }
