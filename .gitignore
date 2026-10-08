@@ -1,5 +1,5 @@
-.data/
-node_modules/
-export-gestion.json
 *.sqlite3
+.data/
 .netlify/
+export-gestion.json
+node_modules/
